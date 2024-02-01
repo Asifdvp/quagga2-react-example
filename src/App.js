@@ -59,6 +59,10 @@ const App = () => {
     window.innerHeight ||
     document.documentElement.clientHeight ||
     document.body.clientHeight;
+  const deviceId = cameras.find(
+    (item) => item.label === "camera2 0, facing back"
+  );
+
   return (
     <div>
       {cameraError ? (
@@ -111,7 +115,7 @@ const App = () => {
         {scanning ? (
           <Scanner
             scannerRef={scannerRef}
-            cameraId={cameras[cameras.length - 1]}
+            cameraId={deviceId.deviceId}
             onDetected={(result) => setResults([...results, result])}
           />
         ) : null}
