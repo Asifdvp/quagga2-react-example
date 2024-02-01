@@ -38,9 +38,9 @@
   .asif,body,html{
     width: 100%  !important;
     height: 100% !important;
-    div,canvas,video{
-        width: 100% !important;
-        height: 100% !important;
-      }
-  }
   
+  }
+  div,canvas,video{
+    width: 100% !important;
+    height: 100% !important;
+  }
