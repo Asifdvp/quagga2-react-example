@@ -28,19 +28,19 @@
     object-fit: cover;
   } */
   video {
-    display: block;
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    display: block !important;
+    margin: 0!important;
+    padding: 0!important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
   }
   .asif,body,html{
-    width: 100%;
-    height: 100%;
+    width: 100%  !important;
+    height: 100% !important;
     div,canvas,video{
-        width: 100%;
-        height: 100%;
+        width: 100% !important;
+        height: 100% !important;
       }
   }
   
