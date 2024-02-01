@@ -29,7 +29,7 @@ const defaultLocatorSettings = {
     willReadFrequently: true,
 };
 
-const defaultDecoders = ['ean_reader'];
+const defaultDecoders = ['code_128_reader'];
 
 const Scanner = ({
     onDetected,
