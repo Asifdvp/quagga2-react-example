@@ -17,7 +17,7 @@ function getMedianOfCodeErrors(decodedCodes) {
   const medianOfErrors = getMedian(errors);
   return medianOfErrors;
 }
-
+console.log(window.innerWidth);
 const defaultConstraints = {
   width:
     window.innerWidth ||
@@ -136,10 +136,6 @@ const Scanner = ({
           locator,
           decoder: { readers: decoders },
           locate,
-          debug: {
-            drawBoundingBox: true, // Dikdörtgen sınırlarını çiz
-            // ... Diğer hata ayıklama ayarları ...
-          },
         },
         async (err) => {
           Quagga.onProcessed(handleProcessed);
