@@ -60,7 +60,7 @@ const App = () => {
     document.documentElement.clientHeight ||
     document.body.clientHeight;
   const deviceId = cameras.find(
-    (item) => item.label === "camera2 0, facing back"
+    (item) => item.label === "camera2 2, facing back"
   );
 
   return (
