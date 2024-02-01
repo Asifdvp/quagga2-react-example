@@ -38,17 +38,7 @@ const App = () => {
     return (
         <div>
             {cameraError ? <p>ERROR INITIALIZING CAMERA ${JSON.stringify(cameraError)} -- DO YOU HAVE PERMISSION?</p> : null}
-            {cameras.length === 0 ? <p>Enumerating Cameras, browser may be prompting for permissions beforehand</p> :
-                <form>
-                    <select onChange={(event) => setCameraId(event.target.value)}>
-                        {cameras.map((camera) => (
-                            <option key={camera.deviceId} value={camera.deviceId}>
-                                {camera.label || camera.deviceId}
-                            </option>
-                        ))}
-                    </select>
-                </form>
-            }
+        
             <button onClick={() => setScanning(!scanning) }>{scanning ? 'Stop' : 'Start'}</button>
       
             <div ref={scannerRef} style={{position: 'relative', border: '3px solid red'}}>
