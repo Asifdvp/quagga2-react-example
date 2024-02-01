@@ -71,9 +71,9 @@ const App = () => {
           style={{
             position: "absolute",
             top: "0px",
-            // left: '0px',
-            // height: '100%',
-            // width: '100%',
+            left: '0px',
+             height: '100%',
+             width: '100%',
             border: "3px solid green",
           }}
           width="640"
