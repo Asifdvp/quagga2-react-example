@@ -27,20 +27,20 @@
     height: 100%;
     object-fit: cover;
   } */
-  video {
+  /* video {
     display: block !important;
     margin: 0!important;
     padding: 0!important;
     width: 100% !important;
     height: 100% !important;
-    object-fit: cover !important;
-  }
+    object-fit: cover !important; */
+  /* } */
   .asif,body,html{
     width: 100%  !important;
     height: 100% !important;
   
   }
-  div,canvas,video{
+  div,canvas{
     width: 100% !important;
     height: 100% !important;
   }
