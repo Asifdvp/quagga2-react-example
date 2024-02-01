@@ -19,8 +19,8 @@ function getMedianOfCodeErrors(decodedCodes) {
 }
 
 const defaultConstraints = {
-  width: "100%",
-  height: "100%",
+    width: "100%",
+    height: "100%",
 };
 
 const defaultLocatorSettings = {
@@ -31,11 +31,11 @@ const defaultLocatorSettings = {
 
 const defaultDecoders = ["code_128_reader"];
 
-const ScannerRoot = ({
+const Scanner = ({
   onDetected,
   scannerRef,
   onScannerReady,
-  cameraId = null,
+  cameraId,
   facingMode,
   constraints = defaultConstraints,
   locator = defaultLocatorSettings,
@@ -44,39 +44,73 @@ const ScannerRoot = ({
 }) => {
   const errorCheck = useCallback(
     (result) => {
-      let hasScanned = false;
       if (!onDetected) {
         return;
       }
-      if (!hasScanned) {
-        const err = getMedianOfCodeErrors(result.codeResult.decodedCodes);
-        // if Quagga is at least 75% certain that it read correctly, then accept the code.
-        if (err < 0.25) {
-          hasScanned = true;
-          onDetected(result.codeResult.code);
-          Quagga.offDetected(errorCheck);
-        }
+      const err = getMedianOfCodeErrors(result.codeResult.decodedCodes);
+      // if Quagga is at least 75% certain that it read correctly, then accept the code.
+      if (err < 0.25) {
+        onDetected(result.codeResult.code);
       }
-      return () => {
-        hasScanned = false;
-      };
     },
-
     [onDetected]
   );
+
+  const handleProcessed = (result) => {
+    const drawingCtx = Quagga.canvas.ctx.overlay;
+    const drawingCanvas = Quagga.canvas.dom.overlay;
+    drawingCtx.font = "24px Arial";
+    drawingCtx.fillStyle = "green";
+
+    if (result) {
+      // console.warn('* quagga onProcessed', result);
+      if (result.boxes) {
+        drawingCtx.clearRect(
+          0,
+          0,
+          parseInt(drawingCanvas.getAttribute("width")),
+          parseInt(drawingCanvas.getAttribute("height"))
+        );
+        result.boxes
+          .filter((box) => box !== result.box)
+          .forEach((box) => {
+            Quagga.ImageDebug.drawPath(box, { x: 0, y: 1 }, drawingCtx, {
+              color: "purple",
+              lineWidth: 2,
+            });
+          });
+      }
+      if (result.box) {
+        Quagga.ImageDebug.drawPath(result.box, { x: 0, y: 1 }, drawingCtx, {
+          color: "blue",
+          lineWidth: 2,
+        });
+      }
+      if (result.codeResult && result.codeResult.code) {
+        // const validated = barcodeValidator(result.codeResult.code);
+        // const validated = validateBarcode(result.codeResult.code);
+        // Quagga.ImageDebug.drawPath(result.line, { x: 'x', y: 'y' }, drawingCtx, { color: validated ? 'green' : 'red', lineWidth: 3 });
+        drawingCtx.font = "24px Arial";
+        // drawingCtx.fillStyle = validated ? 'green' : 'red';
+        // drawingCtx.fillText(`${result.codeResult.code} valid: ${validated}`, 10, 50);
+        drawingCtx.fillText(result.codeResult.code, 10, 20);
+        // if (validated) {
+        //     onDetected(result);
+        // }
+      }
+    }
+  };
 
   useLayoutEffect(() => {
     let ignoreStart = false;
     const init = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 1));
       if (ignoreStart) {
         return;
       }
-      // begin scanner initialization
       await Quagga.init(
         {
           inputStream: {
-            name: "Live",
             type: "LiveStream",
             constraints: {
               ...constraints,
@@ -90,8 +124,9 @@ const ScannerRoot = ({
           decoder: { readers: decoders },
           locate,
         },
-
         async (err) => {
+          Quagga.onProcessed(handleProcessed);
+
           if (err) {
             return console.error("Error starting Quagga:", err);
           }
@@ -103,15 +138,14 @@ const ScannerRoot = ({
           }
         }
       );
-
       Quagga.onDetected(errorCheck);
     };
     init();
-    // cleanup by turning off the camera and any listeners
     return () => {
       ignoreStart = true;
       Quagga.stop();
       Quagga.offDetected(errorCheck);
+      Quagga.offProcessed(handleProcessed);
     };
   }, [
     cameraId,
@@ -128,7 +162,7 @@ const ScannerRoot = ({
   return null;
 };
 
-ScannerRoot.propTypes = {
+Scanner.propTypes = {
   onDetected: PropTypes.func.isRequired,
   scannerRef: PropTypes.object.isRequired,
   onScannerReady: PropTypes.func,
@@ -140,4 +174,4 @@ ScannerRoot.propTypes = {
   locate: PropTypes.bool,
 };
 
-export default ScannerRoot;
+export default Scanner;
