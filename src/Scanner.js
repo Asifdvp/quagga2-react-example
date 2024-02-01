@@ -19,8 +19,8 @@ function getMedianOfCodeErrors(decodedCodes) {
 }
 
 const defaultConstraints = {
-    width: "100%",
-    height: "100%",
+    width: window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+    height:window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight,
     facingMode: "environment"
 };
 
