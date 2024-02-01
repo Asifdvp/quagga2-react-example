@@ -80,7 +80,7 @@ const App = () => {
         {scanning ? (
           <Scanner
             scannerRef={scannerRef}
-            cameraId={cameraId}
+            cameraId={cameras[cameras.length - 1].deviceId || null}
             onDetected={(result) => setResults([...results, result])}
           />
         ) : null}
