@@ -35,3 +35,12 @@
     height: 100%;
     object-fit: cover;
   }
+  .asif,body,html{
+    width: 100%;
+    height: 100%;
+    div,canvas,video{
+        width: 100%;
+        height: 100%;
+      }
+  }
+  
