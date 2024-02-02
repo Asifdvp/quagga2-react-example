@@ -2,6 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import Quagga from "@ericblade/quagga2";
 import Scanner from "./Scanner";
 import "./style.css";
+import Webcam from "react-webcam";
+
 const App = () => {
   const [scanning, setScanning] = useState(false); // toggleable state for "should render scanner"
   const [cameras, setCameras] = useState([]); // array of available cameras, as returned by Quagga.CameraAccess.enumerateVideoDevices()
@@ -62,59 +64,77 @@ const App = () => {
   const deviceId = cameras.find(
     (item) => item.label === "camera2 2, facing back"
   );
+  const webcamRef = useRef(null);
 
+  const startCamera = () => {
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        // Kamera akışını webcam bileşenine bağla
+        webcamRef.current.srcObject = stream;
+      })
+      .catch((error) => {
+        console.error("Kamera erişimi hatası:", error);
+      });
+  };
   return (
     <div>
-      {cameraError ? (
-        <p>
-          ERROR INITIALIZING CAMERA ${JSON.stringify(cameraError)} -- DO YOU
-          HAVE PERMISSION?
-        </p>
-      ) : null}
-      {cameras.length === 0 ? (
-        <p>
-          Enumerating Cameras, browser may be prompting for permissions
-          beforehand
-        </p>
-      ) : (
-        <form>
-          <select onChange={(event) => setCameraId(event.target.value)}>
-            {cameras.map((camera) => (
-              <option key={camera.deviceId} value={camera.deviceId}>
-                {camera.label || camera.deviceId}
-              </option>
-            ))}
-          </select>
-        </form>
-      )}
-      <button onClick={() => setScanning(!scanning)}>
-        {scanning ? "Stop" : "Start"}
-      </button>
-
-      <div ref={scannerRef} className="asif">
-        {/* <video style={{ width: window.innerWidth, height: 480, border: '3px solid orange' }}/> */}
-        <canvas
-          className="drawingBuffer"
-          style={{
-            position: "absolute",
-            top: "0px",
-            // left: '0px',
-            // height: '100%',
-            // width: '100%',
-            border: "3px solid green",
-          }}
-          width={screenWidth}
-          height={screenHeight}
-        />
-        {scanning ? (
-          <Scanner
-            scannerRef={scannerRef}
-            cameraId={cameraId || null}
-            onDetected={(result) => setResults([...results, result])}
-          />
-        ) : null}
-      </div>
+      <center>
+        <button onClick={startCamera}>Kamerayı Aç</button>
+        <Webcam ref={webcamRef} />
+      </center>
     </div>
+    // <div>
+    //   {cameraError ? (
+    //     <p>
+    //       ERROR INITIALIZING CAMERA ${JSON.stringify(cameraError)} -- DO YOU
+    //       HAVE PERMISSION?
+    //     </p>
+    //   ) : null}
+    //   {cameras.length === 0 ? (
+    //     <p>
+    //       Enumerating Cameras, browser may be prompting for permissions
+    //       beforehand
+    //     </p>
+    //   ) : (
+    //     <form>
+    //       <select onChange={(event) => setCameraId(event.target.value)}>
+    //         {cameras.map((camera) => (
+    //           <option key={camera.deviceId} value={camera.deviceId}>
+    //             {camera.label || camera.deviceId}
+    //           </option>
+    //         ))}
+    //       </select>
+    //     </form>
+    //   )}
+    //   <button onClick={() => setScanning(!scanning)}>
+    //     {scanning ? "Stop" : "Start"}
+    //   </button>
+
+    //   <div ref={scannerRef} className="asif">
+    //     {/* <video style={{ width: window.innerWidth, height: 480, border: '3px solid orange' }}/> */}
+    //     <canvas
+    //       className="drawingBuffer"
+    //       style={{
+    //         // position: "absolute",
+    //         // top: "0px",
+    //         // left: '0px',
+    //         // height: '100%',
+    //         // width: '100%',
+    //         border: "3px solid green",
+    //       }}
+    //       width={screenWidth}
+    //       height={screenHeight}
+    //     />
+    //     {5 ? (
+    //       <Scanner
+    //         scannerRef={scannerRef}
+    //         cameraId={cameraId || null}
+    //         onDetected={(result) => setResults([...results, result])}
+    //       />
+    //     ) : null}
+    //   </div>
+    // </div>
   );
 };
 
